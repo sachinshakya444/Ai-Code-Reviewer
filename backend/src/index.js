@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import githubRoutes from "./routes/github.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import reviewRoutes from "./routes/review.js";
 
 dotenv.config();
 
@@ -24,9 +25,10 @@ app.use("/api", limiter);
 
 // ── Routes ──────────────────────────────────────────────
 app.use("/api/github", githubRoutes);
+app.use("/api/review", reviewRoutes);
 
 // Health check
-app.get("/api/health", (req, res) => {
+app.get("/api/health", (s, res) => {
   res.json({ status: "ok", message: "AI Code Reviewer is running 🚀" });
 });
 app.use(notFoundHandler);
