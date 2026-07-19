@@ -7,6 +7,7 @@ import Loader from "./components/Loader";
 import ThemeToggle from "./components/ThemeToggle";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import UserMenu from "./components/UserMenu";
 
 const API_URL = "http://localhost:5000";
 
@@ -53,24 +54,29 @@ export default function App() {
         <div className="relative z-10">
 
           {/* Header */}
+          
           <header className="glass-card border-b border-white/8 px-6 py-4 sticky top-0 z-50">
+          
             <div className="max-w-7xl mx-auto flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-sm">
                   🔍
                 </div>
                 <div>
-                  <h1 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
-                  AI Code Reviewer
-                </h1>
-                <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
-                  Powered by Gemini AI
-                </p>
-                </div>
-              </div>
-              <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
-            </div>
-          </header>
+<h1 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
+  AI Code Reviewer
+</h1>
+<p className="text-[11px]" style={{ color: "var(--text-muted)" }}>
+  Powered by Gemini AI
+</p>
+</div>
+</div>
+<div className="flex items-center gap-3">
+  <UserMenu />
+  <ThemeToggle isDark={isDark} onToggle={() => setIsDark(!isDark)} />
+</div>
+</div>
+</header>
 
           {/* Main Layout */}
           <div className="max-w-5xl mx-auto px-8 py-8">
