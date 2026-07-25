@@ -12,6 +12,7 @@
     "@anthropic-ai/sdk": "^0.39.0",
     "@google/genai": "^2.11.0",
     "@octokit/rest": "^21.1.1",
+    "@prisma/client": "^5.22.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
@@ -20,7 +21,8 @@
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
     "passport": "^0.7.0",
-    "passport-github2": "^0.1.12"
+    "passport-github2": "^0.1.12",
+    "prisma": "^5.22.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
@@ -30,6 +32,10 @@
     "passport-github2@0.1.12": true,
     "express-session@1.19.0": true,
     "jsonwebtoken@9.0.3": true,
-    "cookie-parser@1.4.7": true
+    "cookie-parser@1.4.7": true,
+    "@google/genai@2.11.0": true,
+    "protobufjs@7.6.5": true,
+    "prisma@7.8.0": true,
+    "@prisma/engines@7.8.0": true
   }
 }

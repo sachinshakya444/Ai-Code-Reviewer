@@ -18,9 +18,11 @@ export function requireAuth(req, res, next) {
 
     // Token verify karo
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("🔑 Decoded token:", decoded);
     req.user = decoded;
     next();
   } catch (err) {
+     console.log("❌ Token error:", err.message);
     return res.status(401).json({
       success: false,
       error: "Session expired. Please login again.",
@@ -34,13 +36,15 @@ export function requireAuth(req, res, next) {
  */
 export function optionalAuth(req, res, next) {
   try {
+    console.log("🍪 All cookies:", req.cookies); // YEH ADD KARO
     const token = req.cookies?.token;
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("🔑 Decoded token:", decoded);
       req.user = decoded;
     }
   } catch (err) {
-    // Token invalid hai toh ignore karo
+    console.log("❌ Token error:", err.message);
   }
   next();
 }

@@ -32,7 +32,9 @@ export default function App() {
     setReviewData(null);
 
     try {
-      const response = await axios.post(`${API_URL}/api/review`, { prUrl });
+      const response = await axios.post(`${API_URL}/api/review`, { prUrl }, {
+  withCredentials: true,
+});
       setReviewData(response.data.data);
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong!");

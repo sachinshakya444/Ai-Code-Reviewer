@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { upsertUser } from "../services/dbService.js";
 
 dotenv.config();
 
@@ -18,16 +19,29 @@ passport.use(
       scope: ["user:email", "repo"],
     },
     async (accessToken, refreshToken, profile, done) => {
-      // User object banao jo JWT mein store hoga
-      const user = {
-        githubId: profile.id,
-        username: profile.username,
-        displayName: profile.displayName || profile.username,
-        avatar: profile.photos?.[0]?.value,
-        email: profile.emails?.[0]?.value,
-        accessToken, // GitHub API calls ke liye
-      };
-      return done(null, user);
+      try {
+        // User DB mein save karo
+        const dbUser = await upsertUser({
+          githubId: profile.id,
+          username: profile.username,
+          displayName: profile.displayName || profile.username,
+          avatar: profile.photos?.[0]?.value,
+          email: profile.emails?.[0]?.value,
+        });
+
+        const user = {
+          id: dbUser.id, // DB id — reviews ke liye zaruri
+          githubId: profile.id,
+          username: profile.username,
+          displayName: profile.displayName || profile.username,
+          avatar: profile.photos?.[0]?.value,
+          email: profile.emails?.[0]?.value,
+          accessToken,
+        };
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
     }
   )
 );
@@ -37,54 +51,41 @@ passport.deserializeUser((user, done) => done(null, user));
 
 // ── Routes ──────────────────────────────────────────────────
 
-/**
- * GET /api/auth/github
- * GitHub OAuth flow shuru karta hai
- */
 router.get("/github", passport.authenticate("github"));
 
-/**
- * GET /api/auth/github/callback
- * GitHub OAuth callback — JWT token banata hai aur frontend pe redirect karta hai
- */
 router.get(
   "/github/callback",
-  passport.authenticate("github", { failureRedirect: `${process.env.FRONTEND_URL}?error=auth_failed` }),
+  passport.authenticate("github", {
+    failureRedirect: `${process.env.FRONTEND_URL}?error=auth_failed`,
+  }),
   (req, res) => {
-    // JWT token banao
+    console.log("👤 User object before JWT:", req.user);
     const token = jwt.sign(req.user, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
 
-    // Cookie mein store karo
     res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  domain: "localhost", // YEH ADD KARO
+});
 
-    // Frontend pe redirect karo
     res.redirect(`${process.env.FRONTEND_URL}?login=success`);
   }
 );
 
-/**
- * GET /api/auth/me
- * Current logged in user ki info deta hai
- */
 router.get("/me", (req, res) => {
   try {
     const token = req.cookies?.token;
-
-    if (!token) {
-      return res.json({ success: true, user: null });
-    }
+    if (!token) return res.json({ success: true, user: null });
 
     const user = jwt.verify(token, process.env.JWT_SECRET);
     res.json({
       success: true,
       user: {
+        id: user.id,
         username: user.username,
         displayName: user.displayName,
         avatar: user.avatar,
@@ -96,10 +97,6 @@ router.get("/me", (req, res) => {
   }
 });
 
-/**
- * POST /api/auth/logout
- * Cookie clear karta hai
- */
 router.post("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ success: true, message: "Logged out successfully" });
