@@ -88,10 +88,7 @@ export default function ScoreDisplay({ score, summary, pr }) {
           </p>
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-24 bg-white/5 flex-shrink-0" />
-
-        // Replace karo
+        
         <div className="w-px h-24 flex-shrink-0"
             style={{ background: "var(--border-color)" }} />
 

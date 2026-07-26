@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000";
 
-export default function UserMenu() {
+export default function UserMenu({ onUserChange }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,8 +17,10 @@ export default function UserMenu() {
         withCredentials: true,
       });
       setUser(res.data.user);
+      onUserChange?.(res.data.user);
     } catch (err) {
       setUser(null);
+      onUserChange?.(null);
     } finally {
       setLoading(false);
     }
@@ -30,6 +32,7 @@ export default function UserMenu() {
         withCredentials: true,
       });
       setUser(null);
+      onUserChange?.(null);
     } catch (err) {
       console.error("Logout failed");
     }
@@ -62,21 +65,16 @@ export default function UserMenu() {
 
   return (
     <div className="flex items-center gap-3">
-      {/* User Avatar + Name */}
-      <div className="flex items-center gap-2">
-        <img
-          src={user.avatar}
-          alt={user.username}
-          className="w-8 h-8 rounded-full border-2"
-          style={{ borderColor: "var(--accent-primary)" }}
-        />
-        <span className="text-sm font-medium hidden sm:block"
-              style={{ color: "var(--text-primary)" }}>
-          @{user.username}
-        </span>
-      </div>
-
-      {/* Logout Button */}
+      <img
+        src={user.avatar}
+        alt={user.username}
+        className="w-8 h-8 rounded-full border-2"
+        style={{ borderColor: "var(--accent-primary)" }}
+      />
+      <span className="text-sm font-medium hidden sm:block"
+            style={{ color: "var(--text-primary)" }}>
+        @{user.username}
+      </span>
       <button
         onClick={handleLogout}
         className="text-xs px-3 py-1.5 rounded-lg transition-all duration-200"

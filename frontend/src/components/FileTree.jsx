@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
-// File extension se icon decide karo
 function getFileIcon(filename) {
   const ext = filename.split(".").pop().toLowerCase();
   const icons = {
@@ -14,74 +13,96 @@ function getFileIcon(filename) {
   return icons[ext] || "📄";
 }
 
-// Status color
-function getStatusColor(status) {
-  const colors = {
-    added: "text-green-400",
-    modified: "text-blue-400",
-    removed: "text-red-400",
-    renamed: "text-yellow-400",
-  };
-  return colors[status] || "text-gray-400";
-}
-
 function getStatusBadge(status) {
   const badges = {
-    added: { label: "+", bg: "bg-green-500/20 text-green-400" },
-    modified: { label: "M", bg: "bg-blue-500/20 text-blue-400" },
-    removed: { label: "-", bg: "bg-red-500/20 text-red-400" },
-    renamed: { label: "R", bg: "bg-yellow-500/20 text-yellow-400" },
+    added: { label: "+", bg: { backgroundColor: "rgba(21,128,61,0.15)", color: "#15803d" } },
+    modified: { label: "M", bg: { backgroundColor: "rgba(37,99,235,0.15)", color: "#1d4ed8" } },
+    removed: { label: "-", bg: { backgroundColor: "rgba(220,38,38,0.15)", color: "#b91c1c" } },
+    renamed: { label: "R", bg: { backgroundColor: "rgba(202,138,4,0.15)", color: "#92400e" } },
   };
-  return badges[status] || { label: "?", bg: "bg-gray-500/20 text-gray-400" };
+  return badges[status] || { label: "?", bg: { backgroundColor: "rgba(107,114,128,0.15)", color: "#374151" } };
 }
 
 export default function FileTree({ files, pr }) {
   const [isOpen, setIsOpen] = useState(true);
+  const [isDark, setIsDark] = useState(
+  document.documentElement.classList.contains("dark")
+);
 
+useEffect(() => {
+  const observer = new MutationObserver(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  });
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}, []);
   return (
     <div className="space-y-3">
 
       {/* PR Stats Card */}
-      <div className="glass-card rounded-xl p-4">
-        <p className="text-xs text-white/40 uppercase tracking-wider mb-3">
+      <div className="glass-card rounded-xl p-4"
+     style={{ backgroundColor: isDark ? "rgba(30, 58, 138, 0.3)" : "rgba(219, 234, 254, 0.9)" }}> 
+        <p className="text-xs uppercase tracking-wider mb-3"
+           style={{ color: "var(--text-muted)" }}>
           PR Metadata
         </p>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/60">Files Changed</span>
-            <span className="text-white font-medium">{pr.totalFilesChanged}</span>
+            <span style={{ color: "var(--text-secondary)" }}>Files Changed</span>
+            <span style={{ color: "var(--text-primary)" }} className="font-medium">
+              {pr.totalFilesChanged}
+            </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/60">Reviewed</span>
-            <span className="text-white font-medium">{pr.totalFilesReviewed}</span>
+            <span style={{ color: "var(--text-secondary)" }}>Reviewed</span>
+            <span style={{ color: "var(--text-primary)" }} className="font-medium">
+              {pr.totalFilesReviewed}
+            </span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/60">Additions</span>
-            <span className="text-green-400 font-medium">+{pr.additions}</span>
+            <span style={{ color: "var(--text-secondary)" }}>Additions</span>
+            <span className="text-green-600 font-medium">+{pr.additions}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/60">Deletions</span>
-            <span className="text-red-400 font-medium">-{pr.deletions}</span>
+            <span style={{ color: "var(--text-secondary)" }}>Deletions</span>
+            <span className="text-red-500 font-medium">-{pr.deletions}</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-white/60">State</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium
-              ${pr.state === "open"
-                ? "bg-green-500/20 text-green-400"
-                : "bg-purple-500/20 text-purple-400"}`}>
+            <span style={{ color: "var(--text-secondary)" }}>State</span>
+            <span style={{
+              fontSize: "12px",
+              padding: "2px 8px",
+              borderRadius: "9999px",
+              fontWeight: "500",
+              backgroundColor: pr.state === "open" ? "rgba(21,128,61,0.15)" : "rgba(124,58,237,0.15)",
+              color: pr.state === "open" ? "#15803d" : "#7c3aed",
+            }}>
               {pr.state}
             </span>
           </div>
         </div>
 
         {/* Branch Info */}
-        <div className="mt-3 pt-3 border-t border-white/5">
-          <div className="flex items-center gap-2 text-xs text-white/50">
-            <span className="bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">
+        <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border-color)" }}>
+          <div className="flex items-center gap-2 text-xs flex-wrap">
+            <span style={{
+              backgroundColor: "rgba(21,128,61,0.15)",
+              color: "var(--accent-primary)",
+              padding: "2px 8px",
+              borderRadius: "4px",
+            }}>
               {pr.sourceBranch}
             </span>
-            <span>→</span>
-            <span className="bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded">
+            <span style={{ color: "var(--text-muted)" }}>→</span>
+            <span style={{
+              backgroundColor: "rgba(77,124,15,0.15)",
+              color: "var(--accent-secondary)",
+              padding: "2px 8px",
+              borderRadius: "4px",
+            }}>
               {pr.targetBranch}
             </span>
           </div>
@@ -89,25 +110,30 @@ export default function FileTree({ files, pr }) {
       </div>
 
       {/* File Tree Card */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      <div className="glass-card rounded-xl overflow-hidden"
+     style={{ backgroundColor: isDark ? "rgba(6, 78, 59, 0.3)" : "rgba(236, 253, 245, 0.9)" }}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 
-                     border-b border-white/5 hover:bg-white/3 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 transition-colors"
+          style={{ borderBottom: `1px solid var(--border-color)` }}
         >
           <div className="flex items-center gap-2">
             <span className="text-sm">📁</span>
-            <span className="text-xs font-medium text-white/70 uppercase tracking-wider">
+            <span className="text-xs font-medium uppercase tracking-wider"
+                  style={{ color: "var(--text-secondary)" }}>
               Changed Files
             </span>
           </div>
-          <span className="text-white/30 text-xs">{isOpen ? "▲" : "▼"}</span>
+          <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+            {isOpen ? "▲" : "▼"}
+          </span>
         </button>
 
         {isOpen && (
           <div className="p-2 max-h-96 overflow-y-auto">
             {files.length === 0 ? (
-              <p className="text-white/30 text-xs px-2 py-3 text-center">
+              <p className="text-xs px-2 py-3 text-center"
+                 style={{ color: "var(--text-muted)" }}>
                 No files available
               </p>
             ) : (
@@ -119,18 +145,26 @@ export default function FileTree({ files, pr }) {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="flex items-center justify-between px-2 py-1.5 
-                               rounded-lg hover:bg-white/5 transition-colors group"
+                    className="flex items-center justify-between px-2 py-1.5 rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-sm flex-shrink-0">
                         {getFileIcon(file.filename)}
                       </span>
-                      <span className="text-xs text-white/70 truncate group-hover:text-white/90 transition-colors">
+                      <span className="text-xs truncate"
+                            style={{ color: "var(--text-secondary)" }}>
                         {file.filename.split("/").pop()}
                       </span>
                     </div>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium flex-shrink-0 ml-2 ${badge.bg}`}>
+                    <span style={{
+                      ...badge.bg,
+                      fontSize: "10px",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      fontWeight: "500",
+                      flexShrink: 0,
+                      marginLeft: "8px",
+                    }}>
                       {badge.label}
                     </span>
                   </motion.div>
@@ -140,7 +174,6 @@ export default function FileTree({ files, pr }) {
           </div>
         )}
       </div>
-
     </div>
   );
 }

@@ -9,7 +9,7 @@
 
   /* ── Light Mode Variables (Default) ── */
   :root {
-    --bg-page: #fdf4f0;
+    --bg-page: #b8eaa9;
     --bg-card: #ffffff;
     --bg-card-hover: #fdf9f7;
     --bg-input: #ffffff;
@@ -40,6 +40,19 @@
 
     --scrollbar-thumb: rgba(21, 128, 61, 0.2);
     --scrollbar-thumb-hover: rgba(21, 128, 61, 0.35);
+
+    /* Light mode severity colors */
+    --severity-high-bg: rgba(220, 38, 38, 0.1);
+    --severity-high-text: #b91c1c;
+    --severity-high-border: rgba(220, 38, 38, 0.3);
+
+    --severity-medium-bg: rgba(202, 138, 4, 0.1);
+    --severity-medium-text: #92400e;
+    --severity-medium-border: rgba(202, 138, 4, 0.3);
+
+    --severity-low-bg: rgba(107, 114, 128, 0.1);
+    --severity-low-text: #374151;
+    --severity-low-border: rgba(107, 114, 128, 0.3);
   }
 
   /* ── Dark Mode Variables ── */
@@ -74,6 +87,18 @@
 
     --scrollbar-thumb: rgba(255, 255, 255, 0.1);
     --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+
+    --severity-high-bg: rgba(220, 38, 38, 0.2);
+    --severity-high-text: #fca5a5;
+    --severity-high-border: rgba(220, 38, 38, 0.4);
+
+    --severity-medium-bg: rgba(202, 138, 4, 0.2);
+    --severity-medium-text: #fcd34d;
+    --severity-medium-border: rgba(202, 138, 4, 0.4);
+
+    --severity-low-bg: rgba(107, 114, 128, 0.2);
+    --severity-low-text: #d1d5db;
+    --severity-low-border: rgba(107, 114, 128, 0.4);
   }
 
   body {
