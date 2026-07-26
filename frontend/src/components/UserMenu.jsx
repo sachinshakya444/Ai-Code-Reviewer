@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://ai-code-reviewer-backend-39f9.onrender.com";
 
 export default function UserMenu({ onUserChange }) {
   const [user, setUser] = useState(null);
