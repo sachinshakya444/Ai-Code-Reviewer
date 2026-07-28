@@ -10,7 +10,7 @@ import HistoryPage from "./pages/HistoryPage";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://ai-code-reviewer-backend-39f9.onrender.com";
+const API_URL = "https://ai-code-reviewer-backend-39f9.onrender.com";
 
 
 export default function App() {
