@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const API_URL = "https://ai-code-reviewer-backend-39f9.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "https://ai-code-reviewer-backend-39f9.onrender.com";
 
 function ScoreBadge({ score }) {
   function getColor() {
