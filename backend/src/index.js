@@ -15,22 +15,28 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ── Middleware ──────────────────────────────────────────────
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
-  credentials: true, // Cookies allow karo
-}));
-app.use(express.json());
-app.use(cookieParser());
+// 1. ADD THIS LINE: Trust proxy is required for secure cookies on Render
+app.set("trust proxy", 1);
 
-// Session — Passport ke liye zaruri hai
+// ── Middleware ──────────────────────────────────────────────
+
+// 2. UPDATE YOUR CORS CONFIGURATION
+app.use(cors({
+  origin: "https://ai-code-reviewer-tau-five.vercel.app", // Put your exact Vercel URL here
+  credentials: true, // Cookies allow karo[cite: 3]
+}));
+
+app.use(express.json()); //[cite: 3]
+app.use(cookieParser()); //[cite: 3]
+
+// Session — Passport ke liye zaruri hai[cite: 3]
 app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
+  secret: process.env.SESSION_SECRET, //[cite: 3]
+  resave: false, //[cite: 3]
+  saveUninitialized: false, //[cite: 3]
   cookie: {
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === "production", //[cite: 3]
+    maxAge: 7 * 24 * 60 * 60 * 1000, //[cite: 3]
   },
 }));
 
